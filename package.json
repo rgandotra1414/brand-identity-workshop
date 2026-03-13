@@ -1,0 +1,8 @@
+{
+  "name": "brand-identity-workshop",
+  "version": "1.0.0",
+  "description": "Brand Discovery Workshop — AI-powered brand strategy tool",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

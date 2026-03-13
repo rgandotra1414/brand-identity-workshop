@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Discovery Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #181714;
+    --surface2: #1e1c19;
+    --border: #2a2825;
+    --border-light: #332f2a;
+    --amber: #e8a846;
+    --amber-dim: #c4883a;
+    --amber-glow: rgba(232,168,70,0.08);
+    --cream: #f0e8d8;
+    --cream-dim: #b8ae9e;
+    --red: #c4503a;
+    --green: #4a8c6a;
+    --text: #ddd5c4;
+    --text-dim: #7a7060;
+    --text-muted: #4a4540;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--amber);
+    transition: width 0.4s ease;
+    z-index: 1000;
+    box-shadow: 0 0 12px var(--amber);
+  }
+
+  /* ── SIDEBAR NAV ── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo .logo-mark {
+    font-family: var(--font-serif);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-logo .logo-title {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-item:hover { color: var(--cream); background: var(--amber-glow); }
+  .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-glow); }
+
+  .nav-item .nav-num {
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 16px;
+  }
+
+  .nav-item.active .nav-num { color: var(--amber-dim); }
+
+  .nav-item .nav-check {
+    margin-left: auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .nav-item.completed .nav-check { background: var(--green); }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    margin-left: 220px;
+    min-height: 100vh;
+    padding: 60px 60px 120px;
+    max-width: 960px;
+  }
+
+  /* ── HEADER ── */
+  .workshop-header {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .workshop-header .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+
+  .workshop-header h1 {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .workshop-header h1 em {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  .workshop-header p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 4px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .section.active-section { border-color: var(--border-light); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 28px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.2s;
+    user-select: none;
+  }
+
+  .section-header:hover { background: var(--surface2); }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--amber);
+    min-width: 28px;
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--cream);
+    flex: 1;
+  }
+
+  .section-subtitle {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .section-toggle {
+    color: var(--text-muted);
+    font-size: 18px;
+    transition: transform 0.3s, color 0.2s;
+  }
+
+  .section.open .section-toggle {
+    transform: rotate(180deg);
+    color: var(--amber);
+  }
+
+  .section-body {
+    display: none;
+    padding: 32px 28px 36px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.25s ease;
+  }
+
+  .section.open .section-body { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .field-group {
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  label .label-hint {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 1px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    padding: 12px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus,
+  textarea:focus {
+    border-color: var(--amber-dim);
+    box-shadow: 0 0 0 2px rgba(232,168,70,0.1);
+  }
+
+  textarea { min-height: 88px; }
+  textarea.lg { min-height: 120px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ── BELIEVE INPUTS ── */
+  .believe-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .believe-prefix {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--amber);
+    font-size: 15px;
+    padding-top: 14px;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  .believe-item input { flex: 1; }
+
+  /* ── SLIDERS ── */
+  .spectrum-item {
+    margin-bottom: 28px;
+  }
+
+  .spectrum-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .spectrum-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .spectrum-label.left { color: var(--cream-dim); }
+  .spectrum-label.right { color: var(--amber); }
+
+  .spectrum-value {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--cream-dim) 0%, var(--amber) 100%);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--amber);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--amber), 0 0 12px rgba(232,168,70,0.4);
+    transition: box-shadow 0.2s;
+  }
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 1px var(--amber), 0 0 20px rgba(232,168,70,0.6);
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .field-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-zone {
+    margin-top: 40px;
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .submit-zone p {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 20px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+
+  .btn-primary {
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .btn-primary:hover {
+    background: var(--cream);
+    box-shadow: 0 0 24px rgba(232,168,70,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--amber-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+
+  .btn-secondary:hover {
+    background: var(--amber-glow);
+    border-color: var(--amber);
+  }
+
+  /* ── LOADING ── */
+  #loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,14,12,0.92);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  #loading-overlay.visible { display: flex; }
+
+  .loader-ring {
+    width: 48px; height: 48px;
+    border: 2px solid var(--border);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ── RESULTS PANEL ── */
+  #results-panel {
+    display: none;
+    margin-top: 48px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  #results-panel.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-header h2 {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    color: var(--cream);
+  }
+
+  .results-header .results-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 28px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .result-card:hover { border-color: var(--border-light); }
+
+  .result-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .result-card-icon {
+    width: 28px; height: 28px;
+    background: var(--amber-glow);
+    border: 1px solid var(--amber-dim);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .result-card-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  .result-content {
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .result-content p {
+    margin-bottom: 8px;
+  }
+
+  .result-tag {
+    display: inline-block;
+    background: var(--amber-glow);
+    border: 1px solid var(--border-light);
+    color: var(--cream);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 1px;
+    margin: 3px 4px 3px 0;
+    letter-spacing: 0.04em;
+  }
+
+  .result-statement {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--cream);
+    line-height: 1.5;
+    font-style: italic;
+    padding: 16px 20px;
+    border-left: 2px solid var(--amber);
+    background: var(--amber-glow);
+    margin-top: 8px;
+  }
+
+  .export-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  /* ── ERROR ── */
+  .error-msg {
+    background: rgba(196,80,58,0.1);
+    border: 1px solid rgba(196,80,58,0.3);
+    color: #e07060;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 12px 16px;
+    border-radius: 1px;
+    margin-top: 16px;
+    display: none;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; padding: 32px 20px 80px; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  /* ── MISC ── */
+  .instruction-note {
+    background: var(--amber-glow);
+    border-left: 2px solid var(--amber-dim);
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .field-section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 20px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .field-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── RESULT EXTRAS ── */
+  .result-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    margin-top: 14px;
+  }
+
+  .result-derived {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 14px;
+    font-style: italic;
+  }
+
+  .mini-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .mini-card-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--cream);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .mini-card-belief {
+    font-style: italic;
+    color: var(--amber);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .mini-card-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 2px;
+  }
+
+  .not-trait-tag {
+    display: inline-block;
+    background: rgba(196,80,58,0.08);
+    border: 1px solid rgba(196,80,58,0.2);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 1px;
+    margin: 2px 3px 2px 0;
+    letter-spacing: 0.04em;
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+  }
+
+  .spectrum-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .spectrum-bar-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    min-width: 168px;
+  }
+
+  .spectrum-bar-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .spectrum-bar-fill {
+    height: 100%;
+    background: var(--amber);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .spectrum-bar-score {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--amber);
+    min-width: 20px;
+    text-align: right;
+  }
+
+  .spectrum-bar-rationale {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    margin-left: 180px;
+    font-style: italic;
+  }
+
+  /* ── API KEY ── */
+  #api-key-zone {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+  }
+  #api-key-zone label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  #api-key-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--cream);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    letter-spacing: 0.05em;
+  }
+  #api-key-input:focus {
+    outline: none;
+    border-color: var(--amber);
+  }
+  #api-key-input::placeholder { color: var(--text-muted); }
+
+  /* ── SAVE INDICATOR ── */
+  #save-indicator {
+    padding: 16px 24px 12px;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  #save-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    display: inline-block;
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  /* ── GHOST BUTTON ── */
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: all 0.2s;
+    margin-top: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-ghost:hover {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(196,80,58,0.06);
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Synthesizing brand insights…</div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-mark">Workshop</span>
+    <span class="logo-title">Brand<br>Discovery</span>
+  </div>
+  <a class="nav-item active" href="#s-origin">
+    <span class="nav-num">01</span> Origin Story
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-frustration">
+    <span class="nav-num">02</span> Founder Frustration
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-switch">
+    <span class="nav-num">03</span> Customer Switch
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-hero">
+    <span class="nav-num">04</span> Customer Hero
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-category">
+    <span class="nav-num">05</span> Category Redef.
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-onlyness">
+    <span class="nav-num">06</span> Onlyness
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-enemy">
+    <span class="nav-num">07</span> Industry Enemy
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-believe">
+    <span class="nav-num">08</span> We Believe
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-person">
+    <span class="nav-num">09</span> Brand As Person
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-metaphor">
+    <span class="nav-num">10</span> Brand Metaphor
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-spectrum">
+    <span class="nav-num">11</span> Brand Temperature
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-pain">
+    <span class="nav-num">12</span> Customer Pain
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-diff">
+    <span class="nav-num">13</span> Differentiation
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-headline">
+    <span class="nav-num">14</span> Future Headline
+    <span class="nav-check"></span>
+  </a>
+  <a class="nav-item" href="#s-positioning">
+    <span class="nav-num">15</span> Positioning
+    <span class="nav-check"></span>
+  </a>
+  <div id="api-key-zone">
+    <label for="api-key-input">Anthropic API Key</label>
+    <input id="api-key-input" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
+  </div>
+  <div id="save-indicator">
+    <span id="save-dot"></span>
+    <span id="save-text">No saved session</span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <div class="workshop-header">
+    <div class="eyebrow">Brand Discovery Workshop</div>
+    <h1>Building a brand<br>from the <em>inside out.</em></h1>
+    <p>Work through each exercise with your client. Fill in answers collaboratively, then generate structured brand insights to fuel your strategy.</p>
+  </div>
+
+  <!-- ── SECTION 01 — ORIGIN STORY ── -->
+  <div class="section open" id="s-origin">
+    <div class="section-header" onclick="toggleSection('s-origin')">
+      <span class="section-num">01</span>
+      <span class="section-title">Origin Story</span>
+      <span class="section-subtitle">The Founding Moment</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Where did this all begin? Tell the story of how this brand came to exist — the moment, the place, the person.</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Company Name</label>
+          <input type="text" id="companyName" placeholder="e.g. Meridian Studio">
+        </div>
+        <div class="field-group">
+          <label>Industry / Category</label>
+          <input type="text" id="industry" placeholder="e.g. Architecture & Interior Design">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>The Founding Moment</label>
+        <textarea class="lg" id="originMoment" placeholder="Describe the specific moment or situation that sparked the idea for this company…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Were You Doing Before?</label>
+        <textarea id="originBefore" placeholder="What was the founder's background, career, or context before starting this?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Changed Everything?</label>
+        <input type="text" id="originChange" placeholder="The insight, event, or realization that made this feel necessary…">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 02 — FOUNDER FRUSTRATION ── -->
+  <div class="section" id="s-frustration">
+    <div class="section-header" onclick="toggleSection('s-frustration')">
+      <span class="section-num">02</span>
+      <span class="section-title">Founder Frustration</span>
+      <span class="section-subtitle">The Breaking Point</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">What made the founder say 'enough — someone needs to fix this'? This frustration is the emotional engine of the brand.</div>
+      <div class="field-group">
+        <label>The Core Frustration</label>
+        <textarea class="lg" id="frustrationCore" placeholder="What was broken, missing, or wrong in this industry or world that the founder couldn't accept?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Who Was Being Let Down?</label>
+        <input type="text" id="frustrationWho" placeholder="Who was suffering because of this problem?">
+      </div>
+      <div class="field-group">
+        <label>Why Hadn't Anyone Fixed It?</label>
+        <textarea id="frustrationWhy" placeholder="What was the conventional wisdom or laziness that allowed this problem to persist?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 03 — CUSTOMER SWITCH ── -->
+  <div class="section" id="s-switch">
+    <div class="section-header" onclick="toggleSection('s-switch')">
+      <span class="section-num">03</span>
+      <span class="section-title">Customer Switch</span>
+      <span class="section-subtitle">The Tipping Point</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Why do customers leave their current solution and come to this brand? What is the moment they decide enough is enough?</div>
+      <div class="field-group">
+        <label>What Were They Using Before?</label>
+        <input type="text" id="switchBefore" placeholder="The competitor, workaround, or old approach customers were using…">
+      </div>
+      <div class="field-group">
+        <label>What Was the Breaking Point?</label>
+        <textarea class="lg" id="switchBreaking" placeholder="Describe the specific frustration, failure, or moment that made them look for something new…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Made Them Choose This Brand?</label>
+        <textarea id="switchChose" placeholder="What specifically about this brand made them say 'this is the one'?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 04 — CUSTOMER HERO ── -->
+  <div class="section" id="s-hero">
+    <div class="section-header" onclick="toggleSection('s-hero')">
+      <span class="section-num">04</span>
+      <span class="section-title">Customer Hero</span>
+      <span class="section-subtitle">The Transformation</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">The brand is not the hero — the customer is. This exercise defines the transformation the customer goes through.</div>
+      <div class="field-group">
+        <label>Who Is the Customer Before?</label>
+        <textarea class="lg" id="heroBeforeCustomer" placeholder="Describe their situation, frustrations, limitations, and mindset before finding this brand…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Who Do They Become After?</label>
+        <textarea class="lg" id="heroAfterCustomer" placeholder="Paint the picture of the transformed customer — what can they now do, feel, or achieve?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Is the Transformation in One Sentence?</label>
+        <input type="text" id="heroOneLine" placeholder="We turn _______ into _______.">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 05 — CATEGORY REDEFINITION ── -->
+  <div class="section" id="s-category">
+    <div class="section-header" onclick="toggleSection('s-category')">
+      <span class="section-num">05</span>
+      <span class="section-title">Category Redefinition</span>
+      <span class="section-subtitle">Rewriting the Rules</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Great brands don't just compete in a category — they redefine it. What new game is this brand playing?</div>
+      <div class="field-group">
+        <label>What Category Does This Brand Officially Sit In?</label>
+        <input type="text" id="categoryOfficial" placeholder="e.g. Accounting software, PR agency, Executive coaching…">
+      </div>
+      <div class="field-group">
+        <label>What's Wrong With That Category?</label>
+        <textarea id="categoryWrong" placeholder="What are the tired norms, bad practices, or false beliefs that define this category?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>How Would You Rename or Reframe This Category?</label>
+        <input type="text" id="categoryNew" placeholder="e.g. Instead of 'HR software' we're 'people operating systems'…">
+      </div>
+      <div class="field-group">
+        <label>What New Rules Does This Brand Play By?</label>
+        <textarea id="categoryRules" placeholder="List the ways this brand operates differently from the rest of the category…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 06 — ONLYNESS ── -->
+  <div class="section" id="s-onlyness">
+    <div class="section-header" onclick="toggleSection('s-onlyness')">
+      <span class="section-num">06</span>
+      <span class="section-title">Onlyness</span>
+      <span class="section-subtitle">The Only Statement</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Complete this statement until it is so specific it could only describe this brand. Vague onlyness is not onlyness.</div>
+      <div class="field-group">
+        <label>We are the only…</label>
+        <input type="text" id="onlynessCategory" placeholder="type of company / service / product…">
+      </div>
+      <div class="field-group">
+        <label>…that…</label>
+        <textarea id="onlynessAttribute" placeholder="does / believes / delivers / refuses to…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>…for…</label>
+        <input type="text" id="onlynessAudience" placeholder="specific type of customer or person…">
+      </div>
+      <div class="field-group">
+        <label>Full Onlyness Statement <span class="label-hint">— auto-composed, editable</span></label>
+        <textarea id="onlynessFull" placeholder="We are the only _______ that _______ for _______."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 07 — INDUSTRY ENEMY ── -->
+  <div class="section" id="s-enemy">
+    <div class="section-header" onclick="toggleSection('s-enemy')">
+      <span class="section-num">07</span>
+      <span class="section-title">Industry Enemy</span>
+      <span class="section-subtitle">The Villain</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Every strong brand stands against something. Name the enemy — not a competitor, but a bad practice, broken belief, or industry norm.</div>
+      <div class="field-group">
+        <label>What Is the Enemy?</label>
+        <input type="text" id="enemyName" placeholder="e.g. Complexity, Generic advice, Pay-to-win media, Cookie-cutter design…">
+      </div>
+      <div class="field-group">
+        <label>Why Is It Harmful?</label>
+        <textarea id="enemyHarm" placeholder="How does this enemy hurt customers, damage the industry, or hold people back?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Do Most Brands Do That This Brand Refuses To?</label>
+        <textarea id="enemyRefuse" placeholder="The specific behaviors or practices this brand actively rejects…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 08 — WE BELIEVE ── -->
+  <div class="section" id="s-believe">
+    <div class="section-header" onclick="toggleSection('s-believe')">
+      <span class="section-num">08</span>
+      <span class="section-title">We Believe…</span>
+      <span class="section-subtitle">Core Convictions</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">These are the brand's non-negotiable beliefs. Principles it would never compromise on, even at commercial cost.</div>
+      <div id="believe-list"></div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 09 — BRAND AS PERSON ── -->
+  <div class="section" id="s-person">
+    <div class="section-header" onclick="toggleSection('s-person')">
+      <span class="section-num">09</span>
+      <span class="section-title">Brand As a Person</span>
+      <span class="section-subtitle">Personality Mapping</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Imagine the brand as a fully realized human being. Give them a life, a personality, a way of showing up in the world.</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>How Old Are They?</label>
+          <input type="text" id="brandAge" placeholder="e.g. Early 40s — experienced but still restless">
+        </div>
+        <div class="field-group">
+          <label>What Do They Do For Work?</label>
+          <input type="text" id="brandProfession" placeholder="e.g. Master craftsman who runs their own studio">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Describe Their Personality <span class="label-hint">— Who are they at their core?</span></label>
+        <textarea class="lg" id="brandPersonality" placeholder="Think about their values, how they make people feel, what kind of person they are…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>How Do They Show Up Socially?</label>
+        <textarea id="brandSocial" placeholder="Are they the center of attention or quietly magnetic? Do they listen more than they speak?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>How Do They Communicate?</label>
+        <textarea id="brandComm" placeholder="Direct or warm? Precise or poetic? Formal or conversational? Give an example of how they'd describe something…"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>What Do They Do On Weekends?</label>
+          <input type="text" id="brandWeekends" placeholder="This reveals character and values beyond work…">
+        </div>
+        <div class="field-group">
+          <label>What Would They Never Do or Say?</label>
+          <input type="text" id="brandNever" placeholder="The behavior or phrase that would be completely out of character…">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 10 — BRAND METAPHOR ── -->
+  <div class="section" id="s-metaphor">
+    <div class="section-header" onclick="toggleSection('s-metaphor')">
+      <span class="section-num">10</span>
+      <span class="section-title">Brand Metaphor</span>
+      <span class="section-subtitle">The Brand Image</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">A great metaphor captures in one image what takes paragraphs to explain. Find the image that feels undeniably right.</div>
+      <div class="field-group">
+        <label>Our brand is like a…</label>
+        <input type="text" id="metaphorObject" placeholder="an object, person, place, or thing…">
+      </div>
+      <div class="field-group">
+        <label>…because…</label>
+        <textarea id="metaphorBecause" placeholder="Explain specifically why this metaphor fits — what qualities map across?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Alternative Metaphors Considered</label>
+        <textarea id="metaphorAlts" placeholder="Other images that came up — even if rejected, they reveal something…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 11 — BRAND TEMPERATURE ── -->
+  <div class="section" id="s-spectrum">
+    <div class="section-header" onclick="toggleSection('s-spectrum')">
+      <span class="section-num">11</span>
+      <span class="section-title">Brand Temperature</span>
+      <span class="section-subtitle">Energy &amp; Tone</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Position the brand honestly between each pair. There is no correct answer — find where this brand authentically lives.</div>
+      <div id="spectrum-list"></div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 12 — CUSTOMER PAIN ── -->
+  <div class="section" id="s-pain">
+    <div class="section-header" onclick="toggleSection('s-pain')">
+      <span class="section-num">12</span>
+      <span class="section-title">Customer Pain</span>
+      <span class="section-subtitle">The Deep Frustration</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Go beneath the surface complaint. There's always a deeper fear, identity threat, or unmet need underneath what customers say.</div>
+      <div class="field-group">
+        <label>What Do They Complain About?</label>
+        <textarea id="painSurface" placeholder="The obvious, stated frustration they'd tell anyone…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Do They Actually Fear?</label>
+        <textarea id="painFear" placeholder="The underlying anxiety or worry beneath the complaint…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>How Does This Pain Affect Their Identity?</label>
+        <textarea id="painIdentity" placeholder="What does this problem make them feel about themselves?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>In Their Own Words…</label>
+        <textarea class="lg" id="painWords" placeholder="Write their pain as if they're venting to a trusted friend — raw, unfiltered…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 13 — DIFFERENTIATION ── -->
+  <div class="section" id="s-diff">
+    <div class="section-header" onclick="toggleSection('s-diff')">
+      <span class="section-num">13</span>
+      <span class="section-title">Differentiation</span>
+      <span class="section-subtitle">The Brand's Edge</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Be brutally honest. 'We care more' and 'we're passionate' are not differentiators. What is provably, specifically different?</div>
+      <div class="field-group">
+        <label>Why Should Customers Choose This Brand?</label>
+        <textarea class="lg" id="whyChoose" placeholder="What's the real reason? Not what sounds good — what's true and provable…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Does This Brand Do That No One Else Does?</label>
+        <textarea id="whatsDifferent" placeholder="Process, people, philosophy, point of view, product — what genuinely sets them apart?"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Would Be Lost If This Brand Disappeared?</label>
+        <textarea id="diffLost" placeholder="If this brand vanished tomorrow, what would the world actually miss?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 14 — FUTURE HEADLINE ── -->
+  <div class="section" id="s-headline">
+    <div class="section-header" onclick="toggleSection('s-headline')">
+      <span class="section-num">14</span>
+      <span class="section-title">Future Headline</span>
+      <span class="section-subtitle">The North Star</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Write the headline this brand wants to earn. Not a mission statement — a real newspaper headline, 5 years from now.</div>
+      <div class="field-group">
+        <label>The Headline</label>
+        <input type="text" id="futureHeadline" placeholder="e.g. 'How [Brand] Quietly Rewired the Way Architects Work'">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>Which Publication Would Run It?</label>
+          <input type="text" id="futurePublication" placeholder="e.g. Fast Company, The FT, Wired…">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>What Would the Article Be About?</label>
+        <textarea id="futureArticle" placeholder="Summarize what this brand will have achieved or changed to earn this headline…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 15 — POSITIONING ── -->
+  <div class="section" id="s-positioning">
+    <div class="section-header" onclick="toggleSection('s-positioning')">
+      <span class="section-num">15</span>
+      <span class="section-title">Positioning</span>
+      <span class="section-subtitle">The Strategic Statement</span>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="instruction-note">Draft the positioning statement now, before the AI refines it. Rough is fine — the act of writing it surfaces assumptions.</div>
+      <div class="field-group">
+        <label>Draft Positioning Statement</label>
+        <textarea class="lg" id="positioningDraft" placeholder="For [customer] who [need], [brand] is the [category] that [benefit]. Unlike [alternative], we [proof]."></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Do You Most Want Customers to Think and Feel?</label>
+        <textarea id="positioningFeel" placeholder="The single strongest impression this brand should leave…"></textarea>
+      </div>
+      <div class="field-group">
+        <label>What Would a Perfect Customer Say About This Brand to a Friend?</label>
+        <textarea id="positioningWord" placeholder="Word-of-mouth in its purest form…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SUBMIT ── -->
+  <div class="submit-zone">
+    <p>All sections complete? Generate your brand strategy outputs.</p>
+    <button class="btn-primary" onclick="generateInsights()">✦ Generate Brand Insights</button>
+    <div id="error-msg" class="error-msg"></div>
+    <button class="btn-ghost" onclick="clearSession()">↺ Clear &amp; Start Over</button>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="results-panel">
+    <div class="results-header">
+      <h2>Brand Strategy Output</h2>
+      <div class="results-meta" id="results-date">—</div>
+    </div>
+
+    <!-- 1. Brand Purpose -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">✦</div>
+        <div class="result-card-title">Brand Purpose</div>
+      </div>
+      <div class="result-content" id="purpose-content"></div>
+    </div>
+
+    <!-- 2. Industry Problem -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">⚡</div>
+        <div class="result-card-title">Industry Problem</div>
+      </div>
+      <div class="result-content" id="industry-content"></div>
+    </div>
+
+    <!-- 3. Ideal Customer -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◉</div>
+        <div class="result-card-title">Ideal Customer</div>
+      </div>
+      <div class="result-content" id="customer-content"></div>
+    </div>
+
+    <!-- 4. Category Position -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◈</div>
+        <div class="result-card-title">Category Position</div>
+      </div>
+      <div class="result-content" id="category-content"></div>
+    </div>
+
+    <!-- 5. Unique Advantage -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">▲</div>
+        <div class="result-card-title">Unique Advantage</div>
+      </div>
+      <div class="result-content" id="advantage-content"></div>
+    </div>
+
+    <!-- 6. Brand Enemy -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">✕</div>
+        <div class="result-card-title">Brand Enemy</div>
+      </div>
+      <div class="result-content" id="enemy-content"></div>
+    </div>
+
+    <!-- 7. Brand Values -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◆</div>
+        <div class="result-card-title">Brand Values</div>
+      </div>
+      <div class="result-content" id="values-content"></div>
+    </div>
+
+    <!-- 8. Brand Personality -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◈</div>
+        <div class="result-card-title">Brand Personality</div>
+      </div>
+      <div class="result-content" id="personality-content"></div>
+    </div>
+
+    <!-- 9. Brand Character -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◎</div>
+        <div class="result-card-title">Brand Character</div>
+      </div>
+      <div class="result-content" id="character-content"></div>
+    </div>
+
+    <!-- 10. Brand Energy -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">〜</div>
+        <div class="result-card-title">Brand Energy</div>
+      </div>
+      <div class="result-content" id="energy-content"></div>
+    </div>
+
+    <!-- 11. Customer Pain -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◐</div>
+        <div class="result-card-title">Customer Pain</div>
+      </div>
+      <div class="result-content" id="pain-content"></div>
+    </div>
+
+    <!-- 12. Differentiators -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">⊕</div>
+        <div class="result-card-title">Key Differentiators</div>
+      </div>
+      <div class="result-content" id="differentiators-content"></div>
+    </div>
+
+    <!-- 13. Brand Vision -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◇</div>
+        <div class="result-card-title">Brand Vision</div>
+      </div>
+      <div class="result-content" id="vision-content"></div>
+    </div>
+
+    <!-- 14. Brand Positioning -->
+    <div class="result-card">
+      <div class="result-card-header">
+        <div class="result-card-icon">◎</div>
+        <div class="result-card-title">Brand Positioning</div>
+      </div>
+      <div class="result-content" id="positioning-content"></div>
+    </div>
+
+    <div class="export-actions">
+      <button class="btn-primary" onclick="exportJSON()">↓ Export as JSON</button>
+      <button class="btn-secondary" onclick="exportText()">↓ Export as Text</button>
+      <button class="btn-secondary" onclick="copyToClipboard()">⎘ Copy to Clipboard</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+const SPECTRUMS = [
+  { left: 'Serious', right: 'Playful', id: 'spec_serious_playful' },
+  { left: 'Formal', right: 'Casual', id: 'spec_formal_casual' },
+  { left: 'Rational', right: 'Emotional', id: 'spec_rational_emotional' },
+  { left: 'Classic', right: 'Modern', id: 'spec_classic_modern' },
+  { left: 'Calm', right: 'Energetic', id: 'spec_calm_energetic' },
+];
+
+const SECTION_IDS = [
+  's-origin','s-frustration','s-switch','s-hero','s-category',
+  's-onlyness','s-enemy','s-believe','s-person','s-metaphor',
+  's-spectrum','s-pain','s-diff','s-headline','s-positioning'
+];
+
+// Build believe inputs
+const believeList = document.getElementById('believe-list');
+for (let i = 1; i <= 10; i++) {
+  const div = document.createElement('div');
+  div.className = 'believe-item';
+  div.innerHTML = `
+    <span class="believe-prefix">We believe…</span>
+    <input type="text" id="believe${i}" placeholder="statement ${i}…">
+  `;
+  believeList.appendChild(div);
+}
+
+// Build spectrum sliders
+const spectrumList = document.getElementById('spectrum-list');
+SPECTRUMS.forEach(spec => {
+  const div = document.createElement('div');
+  div.className = 'spectrum-item';
+  div.innerHTML = `
+    <div class="spectrum-labels">
+      <span class="spectrum-label left">${spec.left}</span>
+      <span class="spectrum-label right">${spec.right}</span>
+    </div>
+    <div class="spectrum-value" id="${spec.id}_val">5 — Balanced</div>
+    <input type="range" id="${spec.id}" min="1" max="10" value="5" oninput="updateSpectrum('${spec.id}','${spec.left}','${spec.right}')">
+  `;
+  spectrumList.appendChild(div);
+});
+
+function updateSpectrum(id, left, right) {
+  const val = parseInt(document.getElementById(id).value);
+  const label = document.getElementById(id + '_val');
+  if (val <= 3) label.textContent = `${val} — Leans ${left}`;
+  else if (val >= 8) label.textContent = `${val} — Leans ${right}`;
+  else label.textContent = `${val} — Balanced`;
+  updateProgress();
+}
+
+// ─── ONLYNESS AUTO-COMPOSE ────────────────────────────────────────────────────
+
+function composeOnlyness() {
+  const cat = document.getElementById('onlynessCategory')?.value.trim() || '';
+  const attr = document.getElementById('onlynessAttribute')?.value.trim() || '';
+  const aud = document.getElementById('onlynessAudience')?.value.trim() || '';
+  const full = document.getElementById('onlynessFull');
+  if (full) {
+    full.value = `We are the only ${cat} that ${attr} for ${aud}.`.replace(/\s{2,}/g, ' ');
+  }
+}
+
+['onlynessCategory', 'onlynessAttribute', 'onlynessAudience'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', composeOnlyness);
+});
+
+// ─── SECTION TOGGLE ───────────────────────────────────────────────────────────
+
+function toggleSection(id) {
+  const sec = document.getElementById(id);
+  const wasOpen = sec.classList.contains('open');
+  sec.classList.toggle('open', !wasOpen);
+  updateProgress();
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+
+function updateProgress() {
+  const allInputs = document.querySelectorAll('input[type="text"], textarea');
+  let filled = 0;
+  allInputs.forEach(el => { if (el.value.trim()) filled++; });
+  const pct = Math.min(100, Math.round((filled / allInputs.length) * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  SECTION_IDS.forEach((sid, idx) => {
+    const sec = document.getElementById(sid);
+    if (!sec) return;
+    const inputs = sec.querySelectorAll('input[type="text"], textarea');
+    const filledCount = [...inputs].filter(i => i.value.trim()).length;
+    const navItem = document.querySelectorAll('.nav-item')[idx];
+    if (navItem) navItem.classList.toggle('completed', filledCount > 0);
+  });
+}
+
+document.querySelectorAll('input, textarea').forEach(el => {
+  el.addEventListener('input', updateProgress);
+});
+
+// ─── SCROLL NAV ───────────────────────────────────────────────────────────────
+
+// When the user clicks a nav item we lock the active state to that section
+// until they manually scroll (wheel / touch). This prevents the scroll
+// listener from overwriting the active class during the smooth-scroll animation.
+let _navClickTarget = null;
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('href') === '#' + id);
+  });
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const href = item.getAttribute('href');
+    const id = href.replace('#', '');
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('open');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    _navClickTarget = id;
+    setActiveNav(id);
+  });
+});
+
+// Release the click lock when the user manually scrolls
+['wheel', 'touchmove'].forEach(evt => {
+  window.addEventListener(evt, () => { _navClickTarget = null; }, { passive: true });
+});
+
+function updateActiveNav() {
+  // If the user just clicked a nav item, keep it highlighted until they
+  // manually scroll — don't let the scroll animation overwrite it.
+  if (_navClickTarget !== null) return;
+
+  const threshold = window.scrollY + window.innerHeight * 0.75;
+  let currentId = SECTION_IDS[0];
+
+  SECTION_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= threshold) currentId = id;
+  });
+
+  setActiveNav(currentId);
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
+
+// ─── COLLECT DATA ─────────────────────────────────────────────────────────────
+
+function collectData() {
+  const believes = [];
+  for (let i = 1; i <= 10; i++) {
+    const v = document.getElementById('believe' + i)?.value.trim();
+    if (v) believes.push(v);
+  }
+
+  const spectrumValues = {};
+  SPECTRUMS.forEach(s => {
+    spectrumValues[`${s.left}_${s.right}`] = parseInt(document.getElementById(s.id)?.value || 5);
+  });
+
+  return {
+    company: {
+      name: document.getElementById('companyName')?.value.trim() || '',
+      industry: document.getElementById('industry')?.value.trim() || '',
+    },
+    originStory: {
+      moment: document.getElementById('originMoment')?.value.trim() || '',
+      before: document.getElementById('originBefore')?.value.trim() || '',
+      change: document.getElementById('originChange')?.value.trim() || '',
+    },
+    founderFrustration: {
+      core: document.getElementById('frustrationCore')?.value.trim() || '',
+      who: document.getElementById('frustrationWho')?.value.trim() || '',
+      why: document.getElementById('frustrationWhy')?.value.trim() || '',
+    },
+    customerSwitch: {
+      before: document.getElementById('switchBefore')?.value.trim() || '',
+      breaking: document.getElementById('switchBreaking')?.value.trim() || '',
+      chose: document.getElementById('switchChose')?.value.trim() || '',
+    },
+    customerHero: {
+      before: document.getElementById('heroBeforeCustomer')?.value.trim() || '',
+      after: document.getElementById('heroAfterCustomer')?.value.trim() || '',
+      oneLine: document.getElementById('heroOneLine')?.value.trim() || '',
+    },
+    categoryRedefinition: {
+      official: document.getElementById('categoryOfficial')?.value.trim() || '',
+      wrong: document.getElementById('categoryWrong')?.value.trim() || '',
+      newName: document.getElementById('categoryNew')?.value.trim() || '',
+      rules: document.getElementById('categoryRules')?.value.trim() || '',
+    },
+    onlyness: {
+      category: document.getElementById('onlynessCategory')?.value.trim() || '',
+      attribute: document.getElementById('onlynessAttribute')?.value.trim() || '',
+      audience: document.getElementById('onlynessAudience')?.value.trim() || '',
+      full: document.getElementById('onlynessFull')?.value.trim() || '',
+    },
+    industryEnemy: {
+      name: document.getElementById('enemyName')?.value.trim() || '',
+      harm: document.getElementById('enemyHarm')?.value.trim() || '',
+      refuse: document.getElementById('enemyRefuse')?.value.trim() || '',
+    },
+    weBelieve: believes,
+    brandPerson: {
+      age: document.getElementById('brandAge')?.value.trim() || '',
+      profession: document.getElementById('brandProfession')?.value.trim() || '',
+      personality: document.getElementById('brandPersonality')?.value.trim() || '',
+      social: document.getElementById('brandSocial')?.value.trim() || '',
+      communication: document.getElementById('brandComm')?.value.trim() || '',
+      weekends: document.getElementById('brandWeekends')?.value.trim() || '',
+      never: document.getElementById('brandNever')?.value.trim() || '',
+    },
+    brandMetaphor: {
+      object: document.getElementById('metaphorObject')?.value.trim() || '',
+      because: document.getElementById('metaphorBecause')?.value.trim() || '',
+      alternatives: document.getElementById('metaphorAlts')?.value.trim() || '',
+    },
+    brandTemperature: spectrumValues,
+    customerPain: {
+      surface: document.getElementById('painSurface')?.value.trim() || '',
+      fear: document.getElementById('painFear')?.value.trim() || '',
+      identity: document.getElementById('painIdentity')?.value.trim() || '',
+      words: document.getElementById('painWords')?.value.trim() || '',
+    },
+    differentiation: {
+      whyChoose: document.getElementById('whyChoose')?.value.trim() || '',
+      whatsDifferent: document.getElementById('whatsDifferent')?.value.trim() || '',
+      lost: document.getElementById('diffLost')?.value.trim() || '',
+    },
+    futureHeadline: {
+      headline: document.getElementById('futureHeadline')?.value.trim() || '',
+      publication: document.getElementById('futurePublication')?.value.trim() || '',
+      article: document.getElementById('futureArticle')?.value.trim() || '',
+    },
+    positioning: {
+      draft: document.getElementById('positioningDraft')?.value.trim() || '',
+      feel: document.getElementById('positioningFeel')?.value.trim() || '',
+      word: document.getElementById('positioningWord')?.value.trim() || '',
+    }
+  };
+}
+
+// ─── GENERATE INSIGHTS ────────────────────────────────────────────────────────
+
+let generatedData = null;
+
+async function generateInsights() {
+  const data = collectData();
+  const errEl = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+
+  if (!data.company.name) {
+    errEl.textContent = 'Please fill in at least the company name before generating insights.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('loading-overlay').classList.add('visible');
+
+  const tempText = SPECTRUMS.map(s => {
+    const val = data.brandTemperature[`${s.left}_${s.right}`];
+    return `${s.left} ↔ ${s.right}: ${val}`;
+  }).join('\n');
+
+  const believeText = data.weBelieve.length
+    ? data.weBelieve.map(b => `• We believe ${b}`).join('\n')
+    : '(none provided)';
+
+  const prompt = `You are a senior brand strategist with deep expertise in narrative-driven brand building.
+You have just completed a Brand Discovery Workshop with a client.
+Synthesize the raw workshop data below into 14 precise, strategic brand outputs.
+Be specific and grounded in the actual inputs. Avoid generic brand language.
+Every output must feel like it could only belong to THIS brand.
+
+━━━ WORKSHOP DATA ━━━
+COMPANY: ${data.company.name} | INDUSTRY: ${data.company.industry}
+
+01. ORIGIN STORY
+Founding moment: ${data.originStory.moment}
+Before: ${data.originStory.before}
+What changed: ${data.originStory.change}
+
+02. FOUNDER FRUSTRATION
+Core frustration: ${data.founderFrustration.core}
+Who was let down: ${data.founderFrustration.who}
+Why it persisted: ${data.founderFrustration.why}
+
+03. CUSTOMER SWITCH
+Was using: ${data.customerSwitch.before}
+Breaking point: ${data.customerSwitch.breaking}
+Why they chose us: ${data.customerSwitch.chose}
+
+04. CUSTOMER HERO
+Before: ${data.customerHero.before}
+After: ${data.customerHero.after}
+Transformation: ${data.customerHero.oneLine}
+
+05. CATEGORY REDEFINITION
+Official category: ${data.categoryRedefinition.official}
+What's wrong with it: ${data.categoryRedefinition.wrong}
+New framing: ${data.categoryRedefinition.newName}
+New rules: ${data.categoryRedefinition.rules}
+
+06. ONLYNESS
+${data.onlyness.full}
+
+07. INDUSTRY ENEMY
+Enemy: ${data.industryEnemy.name}
+Why harmful: ${data.industryEnemy.harm}
+What we refuse to do: ${data.industryEnemy.refuse}
+
+08. WE BELIEVE
+${believeText}
+
+09. BRAND AS PERSON
+Age: ${data.brandPerson.age} | Profession: ${data.brandPerson.profession}
+Personality: ${data.brandPerson.personality}
+Social: ${data.brandPerson.social}
+Communication: ${data.brandPerson.communication}
+Weekends: ${data.brandPerson.weekends}
+Would never: ${data.brandPerson.never}
+
+10. BRAND METAPHOR
+"${data.company.name} is like a ${data.brandMetaphor.object} because ${data.brandMetaphor.because}"
+Alternatives considered: ${data.brandMetaphor.alternatives}
+
+11. BRAND TEMPERATURE (1=left, 10=right)
+${tempText}
+
+12. CUSTOMER PAIN
+Surface pain: ${data.customerPain.surface}
+Deeper fear: ${data.customerPain.fear}
+Identity impact: ${data.customerPain.identity}
+In their words: ${data.customerPain.words}
+
+13. DIFFERENTIATION
+Why choose us: ${data.differentiation.whyChoose}
+What no one else does: ${data.differentiation.whatsDifferent}
+What would be lost: ${data.differentiation.lost}
+
+14. FUTURE HEADLINE
+"${data.futureHeadline.headline}" — ${data.futureHeadline.publication}
+What it's about: ${data.futureHeadline.article}
+
+15. POSITIONING (DRAFT)
+${data.positioning.draft}
+Desired feeling: ${data.positioning.feel}
+Word of mouth: ${data.positioning.word}
+
+━━━ OUTPUT REQUIRED ━━━
+
+Return ONLY valid JSON, no markdown, no backticks, no preamble:
+
+{
+  "brandPurpose": {
+    "statement": "Single sentence beginning with 'We exist to…'. Grounded in origin story, founder frustration, and future headline.",
+    "derivedFrom": "Brief note on which inputs shaped this"
+  },
+  "industryProblem": {
+    "statement": "A charged, specific articulation of the broken status quo this brand is fighting. Make the reader feel the problem.",
+    "rootCause": "The deeper systemic reason this problem exists",
+    "derivedFrom": "Brief note"
+  },
+  "idealCustomer": {
+    "portrait": "Vivid 3-4 sentence psychographic portrait — not demographics",
+    "currentReality": "Their life BEFORE this brand. Frustrations, compromises, workarounds.",
+    "desiredIdentity": "Who they become AFTER. The transformation.",
+    "switchTrigger": "The specific moment that makes them switch",
+    "derivedFrom": "Brief note"
+  },
+  "categoryPosition": {
+    "redefinition": "How this brand rewrites the category — the new frame and new rules",
+    "onlyness": "Refined Onlyness statement — sharp, specific, provable",
+    "categoryName": "What this brand would call its category if it could rename it",
+    "derivedFrom": "Brief note"
+  },
+  "uniqueAdvantage": {
+    "coreAdvantage": "The single most defensible advantage — one clear thing, not a list",
+    "proof": "Specific evidence or capability that makes this real, not just claimed",
+    "whyHardToCopy": "Why competitors cannot easily replicate this",
+    "derivedFrom": "Brief note"
+  },
+  "brandEnemy": {
+    "enemy": "The named enemy — bad practice, broken belief, or industry norm",
+    "manifesto": "2-3 sentence rallying cry against this enemy. Charged and specific.",
+    "whatWeDoInstead": "The direct alternative this brand offers",
+    "derivedFrom": "Brief note"
+  },
+  "brandValues": [
+    {
+      "name": "Value name — one word or short phrase",
+      "belief": "The 'We believe…' statement this value is rooted in",
+      "inPractice": "What this value looks like in a real business decision",
+      "notThis": "The opposite behavior this value explicitly rejects"
+    }
+  ],
+  "brandPersonality": {
+    "traits": [
+      {
+        "trait": "Trait name",
+        "description": "How this trait manifests in behavior, not just what it means",
+        "inAction": "Specific example of this trait in how the brand communicates"
+      }
+    ],
+    "notTheseTraits": ["trait this brand is NOT, even if adjacent"],
+    "derivedFrom": "Brief note"
+  },
+  "brandCharacter": {
+    "personDescription": "Rich paragraph of the brand as a fully realized human",
+    "metaphor": "Refined metaphor: 'This brand is like a [X] because [specific strategic reason]'",
+    "inARoomTheyAre": "In a room full of people, this brand is the one who…",
+    "derivedFrom": "Brief note"
+  },
+  "brandEnergy": {
+    "spectrumProfile": {
+      "seriousToPlayful": "Score/10 — one-line rationale",
+      "formalToCasual": "Score/10 — one-line rationale",
+      "rationalToEmotional": "Score/10 — one-line rationale",
+      "classicToModern": "Score/10 — one-line rationale",
+      "calmToEnergetic": "Score/10 — one-line rationale"
+    },
+    "energySummary": "One sentence capturing the brand's overall energy"
+  },
+  "customerPain": {
+    "surfacePain": "The obvious stated frustration",
+    "deeperPain": "The underlying fear or unmet need",
+    "identityPain": "The threat to how they see themselves",
+    "painInTheirWords": "First-person venting — raw and real",
+    "derivedFrom": "Brief note"
+  },
+  "differentiators": [
+    {
+      "differentiator": "Specific, defensible differentiator",
+      "proof": "What makes this real and provable",
+      "customerBenefit": "How this translates into a benefit the customer feels",
+      "vsCategory": "How this compares to what the rest of the category does"
+    }
+  ],
+  "brandVision": {
+    "futureState": "The world this brand is working to create",
+    "headline": "The future headline, refined and sharpened",
+    "in5Years": "What this brand will have built, changed, or proven",
+    "northStar": "One sentence that guides every major decision",
+    "derivedFrom": "Brief note"
+  },
+  "brandPositioning": {
+    "statement": "For [ideal customer] who [problem], [brand] is the [redefined category] that [unique advantage]. Unlike [enemy approach], we [proof].",
+    "tagline": "3-7 word tagline capturing the brand promise",
+    "elevatorPitch": "2-3 sentences — conversational, compelling, zero jargon",
+    "derivedFrom": "Brief note"
+  }
+}`;
+
+  const apiKey = document.getElementById('api-key-input')?.value.trim();
+  if (!apiKey) {
+    document.getElementById('loading-overlay').classList.remove('visible');
+    errEl.textContent = 'Please enter your Anthropic API key in the sidebar before generating.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 8000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const apiData = await response.json();
+
+    if (apiData.error) {
+      throw new Error(apiData.error.message || 'API error');
+    }
+
+    const raw = apiData.content?.map(b => b.text || '').join('') || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    generatedData = { workshopData: data, brandInsights: parsed, generatedAt: new Date().toISOString() };
+    displayResults(parsed, data.company.name);
+    saveSession();
+
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = err.message || 'Failed to generate insights. Please check all sections are filled and try again.';
+    errEl.style.display = 'block';
+  } finally {
+    document.getElementById('loading-overlay').classList.remove('visible');
+  }
+}
+
+// ─── DISPLAY RESULTS ──────────────────────────────────────────────────────────
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function displayResults(ins, companyName) {
+  document.getElementById('results-date').textContent =
+    `${companyName || 'Brand'} · ${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+
+  // 1. Brand Purpose
+  document.getElementById('purpose-content').innerHTML = `
+    <div class="result-statement">${esc(ins.brandPurpose?.statement)}</div>
+    <div class="result-derived">↳ ${esc(ins.brandPurpose?.derivedFrom)}</div>
+  `;
+
+  // 2. Industry Problem
+  document.getElementById('industry-content').innerHTML = `
+    <div class="result-statement">${esc(ins.industryProblem?.statement)}</div>
+    <div class="result-label">Root Cause</div>
+    <p>${esc(ins.industryProblem?.rootCause)}</p>
+    <div class="result-derived">↳ ${esc(ins.industryProblem?.derivedFrom)}</div>
+  `;
+
+  // 3. Ideal Customer
+  const ic = ins.idealCustomer || {};
+  document.getElementById('customer-content').innerHTML = `
+    <div class="result-label">Portrait</div>
+    <p>${esc(ic.portrait)}</p>
+    <div class="result-label">Current Reality — Before</div>
+    <p>${esc(ic.currentReality)}</p>
+    <div class="result-label">Desired Identity — After</div>
+    <p>${esc(ic.desiredIdentity)}</p>
+    <div class="result-label">Switch Trigger</div>
+    <p>${esc(ic.switchTrigger)}</p>
+    <div class="result-derived">↳ ${esc(ic.derivedFrom)}</div>
+  `;
+
+  // 4. Category Position
+  const cp = ins.categoryPosition || {};
+  document.getElementById('category-content').innerHTML = `
+    <p>${esc(cp.redefinition)}</p>
+    <div class="result-label">Onlyness</div>
+    <div class="result-statement">${esc(cp.onlyness)}</div>
+    <div class="result-label" style="margin-top:14px">Category Name</div>
+    <span class="result-tag" style="font-size:14px">${esc(cp.categoryName)}</span>
+    <div class="result-derived">↳ ${esc(cp.derivedFrom)}</div>
+  `;
+
+  // 5. Unique Advantage
+  const ua = ins.uniqueAdvantage || {};
+  document.getElementById('advantage-content').innerHTML = `
+    <div class="result-statement">${esc(ua.coreAdvantage)}</div>
+    <div class="result-label">Proof</div>
+    <p>${esc(ua.proof)}</p>
+    <div class="result-label">Why It's Hard to Copy</div>
+    <p>${esc(ua.whyHardToCopy)}</p>
+    <div class="result-derived">↳ ${esc(ua.derivedFrom)}</div>
+  `;
+
+  // 6. Brand Enemy
+  const be = ins.brandEnemy || {};
+  document.getElementById('enemy-content').innerHTML = `
+    <div style="margin-bottom:14px"><span class="result-tag" style="font-size:14px">${esc(be.enemy)}</span></div>
+    <div class="result-statement">${esc(be.manifesto)}</div>
+    <div class="result-label">What We Do Instead</div>
+    <p>${esc(be.whatWeDoInstead)}</p>
+    <div class="result-derived">↳ ${esc(be.derivedFrom)}</div>
+  `;
+
+  // 7. Brand Values
+  const vals = ins.brandValues || [];
+  document.getElementById('values-content').innerHTML = vals.map(v => `
+    <div class="mini-card">
+      <div class="mini-card-name">${esc(v.name)}</div>
+      <div class="mini-card-belief">"${esc(v.belief)}"</div>
+      <div class="result-label">In Practice</div>
+      <div class="mini-card-sub">${esc(v.inPractice)}</div>
+      <div class="result-label">Not This</div>
+      <div class="mini-card-sub" style="color:var(--text-muted);text-decoration:line-through;text-decoration-color:var(--red)">${esc(v.notThis)}</div>
+    </div>
+  `).join('');
+
+  // 8. Brand Personality
+  const bp = ins.brandPersonality || {};
+  const traits = bp.traits || [];
+  const notTraits = bp.notTheseTraits || [];
+  document.getElementById('personality-content').innerHTML = `
+    <div style="margin-bottom:16px">${traits.map(t => `<span class="result-tag">${esc(t.trait)}</span>`).join('')}</div>
+    ${traits.map(t => `
+      <div style="margin-bottom:16px">
+        <strong style="color:var(--cream-dim)">${esc(t.trait)}:</strong>
+        <span style="color:var(--text-dim);margin-left:6px">${esc(t.description)}</span>
+        <div class="result-label">In Action</div>
+        <p style="font-style:italic;color:var(--text-dim)">${esc(t.inAction)}</p>
+      </div>
+    `).join('')}
+    ${notTraits.length ? `
+      <div class="result-label">Not These Traits</div>
+      <div>${notTraits.map(t => `<span class="not-trait-tag">${esc(t)}</span>`).join('')}</div>
+    ` : ''}
+    <div class="result-derived">↳ ${esc(bp.derivedFrom)}</div>
+  `;
+
+  // 9. Brand Character
+  const bc = ins.brandCharacter || {};
+  document.getElementById('character-content').innerHTML = `
+    <p>${esc(bc.personDescription)}</p>
+    <div class="result-label">Brand Metaphor</div>
+    <div class="result-statement">${esc(bc.metaphor)}</div>
+    <div class="result-label" style="margin-top:14px">In a Room They Are…</div>
+    <p style="font-style:italic;color:var(--text-dim)">${esc(bc.inARoomTheyAre)}</p>
+    <div class="result-derived">↳ ${esc(bc.derivedFrom)}</div>
+  `;
+
+  // 10. Brand Energy
+  const beng = ins.brandEnergy || {};
+  const sp = beng.spectrumProfile || {};
+  const specRows = [
+    { label: 'Serious → Playful', key: 'seriousToPlayful' },
+    { label: 'Formal → Casual', key: 'formalToCasual' },
+    { label: 'Rational → Emotional', key: 'rationalToEmotional' },
+    { label: 'Classic → Modern', key: 'classicToModern' },
+    { label: 'Calm → Energetic', key: 'calmToEnergetic' },
+  ];
+  function parseScore(val) {
+    if (!val) return 5;
+    const m = String(val).match(/\d+/);
+    return m ? Math.min(10, Math.max(1, parseInt(m[0]))) : 5;
+  }
+  document.getElementById('energy-content').innerHTML =
+    specRows.map(row => {
+      const raw = sp[row.key] || '5';
+      const score = parseScore(raw);
+      const rationale = String(raw).replace(/^\d+[\s\/10]*[-—–]*\s*/, '').trim();
+      return `
+        <div class="spectrum-bar-row">
+          <div class="spectrum-bar-label">${row.label}</div>
+          <div class="spectrum-bar-track">
+            <div class="spectrum-bar-fill" style="width:${score * 10}%"></div>
+          </div>
+          <div class="spectrum-bar-score">${score}</div>
+        </div>
+        ${rationale ? `<div class="spectrum-bar-rationale">${esc(rationale)}</div>` : ''}
+      `;
+    }).join('') +
+    `<div class="result-statement" style="margin-top:16px">${esc(beng.energySummary)}</div>`;
+
+  // 11. Customer Pain
+  const cpain = ins.customerPain || {};
+  document.getElementById('pain-content').innerHTML = `
+    <div class="result-label">Surface Pain</div>
+    <p>${esc(cpain.surfacePain)}</p>
+    <div class="result-label">Deeper Pain</div>
+    <p>${esc(cpain.deeperPain)}</p>
+    <div class="result-label">Identity Pain</div>
+    <p>${esc(cpain.identityPain)}</p>
+    <div class="result-label">In Their Words</div>
+    <div class="result-statement">${esc(cpain.painInTheirWords)}</div>
+    <div class="result-derived">↳ ${esc(cpain.derivedFrom)}</div>
+  `;
+
+  // 12. Differentiators
+  const diffs = ins.differentiators || [];
+  document.getElementById('differentiators-content').innerHTML = diffs.map(d => `
+    <div class="mini-card">
+      <div class="mini-card-name">${esc(d.differentiator)}</div>
+      <div class="result-label">Proof</div>
+      <div class="mini-card-sub">${esc(d.proof)}</div>
+      <div class="result-label">Customer Benefit</div>
+      <div class="mini-card-sub">${esc(d.customerBenefit)}</div>
+      <div class="result-label">vs. The Category</div>
+      <div class="mini-card-sub" style="color:var(--text-muted)">${esc(d.vsCategory)}</div>
+    </div>
+  `).join('');
+
+  // 13. Brand Vision
+  const bv = ins.brandVision || {};
+  document.getElementById('vision-content').innerHTML = `
+    <div class="result-label">Future State</div>
+    <p>${esc(bv.futureState)}</p>
+    <div class="result-label">Future Headline</div>
+    <div class="result-statement">${esc(bv.headline)}</div>
+    <div class="result-label" style="margin-top:14px">In 5 Years</div>
+    <p>${esc(bv.in5Years)}</p>
+    <div class="result-label">North Star</div>
+    <p style="font-style:italic">${esc(bv.northStar)}</p>
+    <div class="result-derived">↳ ${esc(bv.derivedFrom)}</div>
+  `;
+
+  // 14. Brand Positioning
+  const bpos = ins.brandPositioning || {};
+  document.getElementById('positioning-content').innerHTML = `
+    <div class="result-statement">${esc(bpos.statement)}</div>
+    <div style="margin-top:16px"><span class="result-tag" style="font-size:15px;letter-spacing:0.06em">${esc(bpos.tagline)}</span></div>
+    <div class="result-label" style="margin-top:16px">Elevator Pitch</div>
+    <p>${esc(bpos.elevatorPitch)}</p>
+    <div class="result-derived">↳ ${esc(bpos.derivedFrom)}</div>
+  `;
+
+  const panel = document.getElementById('results-panel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── EXPORT ───────────────────────────────────────────────────────────────────
+
+function exportJSON() {
+  if (!generatedData) return;
+  const blob = new Blob([JSON.stringify(generatedData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `brand-discovery-${(generatedData.workshopData.company.name || 'output').replace(/\s+/g,'-').toLowerCase()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportText() {
+  if (!generatedData) return;
+  const ins = generatedData.brandInsights;
+  const d = generatedData.workshopData;
+  const lines = [
+    `BRAND STRATEGY OUTPUT`,
+    `Company: ${d.company.name}`,
+    `Generated: ${new Date(generatedData.generatedAt).toLocaleString()}`,
+    ``,
+    `── BRAND PURPOSE ──`,
+    ins.brandPurpose?.statement || '',
+    `↳ ${ins.brandPurpose?.derivedFrom || ''}`,
+    ``,
+    `── INDUSTRY PROBLEM ──`,
+    ins.industryProblem?.statement || '',
+    `Root Cause: ${ins.industryProblem?.rootCause || ''}`,
+    ``,
+    `── IDEAL CUSTOMER ──`,
+    `Portrait: ${ins.idealCustomer?.portrait || ''}`,
+    `Current Reality: ${ins.idealCustomer?.currentReality || ''}`,
+    `Desired Identity: ${ins.idealCustomer?.desiredIdentity || ''}`,
+    `Switch Trigger: ${ins.idealCustomer?.switchTrigger || ''}`,
+    ``,
+    `── CATEGORY POSITION ──`,
+    ins.categoryPosition?.redefinition || '',
+    `Onlyness: ${ins.categoryPosition?.onlyness || ''}`,
+    `Category Name: ${ins.categoryPosition?.categoryName || ''}`,
+    ``,
+    `── UNIQUE ADVANTAGE ──`,
+    ins.uniqueAdvantage?.coreAdvantage || '',
+    `Proof: ${ins.uniqueAdvantage?.proof || ''}`,
+    `Why Hard to Copy: ${ins.uniqueAdvantage?.whyHardToCopy || ''}`,
+    ``,
+    `── BRAND ENEMY ──`,
+    `Enemy: ${ins.brandEnemy?.enemy || ''}`,
+    ins.brandEnemy?.manifesto || '',
+    `What We Do Instead: ${ins.brandEnemy?.whatWeDoInstead || ''}`,
+    ``,
+    `── BRAND VALUES ──`,
+    ...(ins.brandValues || []).map(v =>
+      `• ${v.name}: ${v.belief}\n  In Practice: ${v.inPractice}\n  Not This: ${v.notThis}`
+    ),
+    ``,
+    `── BRAND PERSONALITY ──`,
+    ...(ins.brandPersonality?.traits || []).map(t =>
+      `• ${t.trait}: ${t.description}\n  In Action: ${t.inAction}`
+    ),
+    `Not These Traits: ${(ins.brandPersonality?.notTheseTraits || []).join(', ')}`,
+    ``,
+    `── BRAND CHARACTER ──`,
+    ins.brandCharacter?.personDescription || '',
+    `Metaphor: ${ins.brandCharacter?.metaphor || ''}`,
+    `In a Room: ${ins.brandCharacter?.inARoomTheyAre || ''}`,
+    ``,
+    `── BRAND ENERGY ──`,
+    `Serious → Playful: ${ins.brandEnergy?.spectrumProfile?.seriousToPlayful || ''}`,
+    `Formal → Casual: ${ins.brandEnergy?.spectrumProfile?.formalToCasual || ''}`,
+    `Rational → Emotional: ${ins.brandEnergy?.spectrumProfile?.rationalToEmotional || ''}`,
+    `Classic → Modern: ${ins.brandEnergy?.spectrumProfile?.classicToModern || ''}`,
+    `Calm → Energetic: ${ins.brandEnergy?.spectrumProfile?.calmToEnergetic || ''}`,
+    `Energy Summary: ${ins.brandEnergy?.energySummary || ''}`,
+    ``,
+    `── CUSTOMER PAIN ──`,
+    `Surface: ${ins.customerPain?.surfacePain || ''}`,
+    `Deeper: ${ins.customerPain?.deeperPain || ''}`,
+    `Identity: ${ins.customerPain?.identityPain || ''}`,
+    `In Their Words: ${ins.customerPain?.painInTheirWords || ''}`,
+    ``,
+    `── KEY DIFFERENTIATORS ──`,
+    ...(ins.differentiators || []).map(d =>
+      `• ${d.differentiator}\n  Proof: ${d.proof}\n  Customer Benefit: ${d.customerBenefit}\n  vs. Category: ${d.vsCategory}`
+    ),
+    ``,
+    `── BRAND VISION ──`,
+    `Future State: ${ins.brandVision?.futureState || ''}`,
+    `Headline: ${ins.brandVision?.headline || ''}`,
+    `In 5 Years: ${ins.brandVision?.in5Years || ''}`,
+    `North Star: ${ins.brandVision?.northStar || ''}`,
+    ``,
+    `── BRAND POSITIONING ──`,
+    ins.brandPositioning?.statement || '',
+    `Tagline: ${ins.brandPositioning?.tagline || ''}`,
+    `Elevator Pitch: ${ins.brandPositioning?.elevatorPitch || ''}`,
+  ];
+
+  const text = lines.join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `brand-strategy-${(d.company.name || 'output').replace(/\s+/g,'-').toLowerCase()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function copyToClipboard() {
+  if (!generatedData) return;
+  const json = JSON.stringify(generatedData, null, 2);
+  try {
+    await navigator.clipboard.writeText(json);
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// ─── LOCAL STORAGE AUTO-SAVE ──────────────────────────────────────────────────
+
+const SESSION_KEY = 'brandos_session';
+let _lsAvailable = true;
+
+// Test localStorage availability once
+try { localStorage.setItem('__ls_test__', '1'); localStorage.removeItem('__ls_test__'); }
+catch(e) { _lsAvailable = false; }
+
+function setSaveIndicator(state, timeStr) {
+  const dot = document.getElementById('save-dot');
+  const txt = document.getElementById('save-text');
+  if (!dot || !txt) return;
+  const states = {
+    idle:     { color: 'var(--text-muted)', text: 'No saved session' },
+    saving:   { color: 'var(--amber)',      text: 'Saving\u2026' },
+    saved:    { color: 'var(--green)',      text: `Saved ${timeStr || ''}` },
+    restored: { color: '#6a9fd8',           text: `Session restored \u00b7 ${timeStr || ''}` },
+    error:    { color: 'var(--red)',        text: timeStr || 'Save failed' },
+  };
+  const s = states[state] || states.idle;
+  dot.style.background = s.color;
+  txt.textContent = s.text;
+}
+
+function fmtTime(date) {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function saveSession() {
+  if (!_lsAvailable) return;
+  const fields = {};
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+    if (el.id) fields[el.id] = el.value;
+  });
+  const ranges = {};
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    if (el.id) ranges[el.id] = el.value;
+  });
+  const payload = {
+    savedAt: new Date().toISOString(),
+    fields,
+    ranges,
+    generatedData: generatedData || null,
+  };
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+    setSaveIndicator('saved', fmtTime(new Date()));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+      setSaveIndicator('error', 'Storage full');
+      console.warn('localStorage quota exceeded — session not saved');
+    } else {
+      setSaveIndicator('error', 'Save failed');
+    }
+  }
+}
+
+// Debounced wrapper — fires 800ms after last input
+let _saveTimer = null;
+function debouncedSave() {
+  setSaveIndicator('saving');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(saveSession, 800);
+}
+
+// Attach debounced save to all inputs
+document.querySelectorAll('input[type="text"], textarea, input[type="range"]').forEach(el => {
+  el.addEventListener('input', debouncedSave);
+});
+
+function restoreSession() {
+  if (!_lsAvailable) return;
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e) { return; }
+  if (!saved) return;
+
+  // Restore text fields + textareas
+  if (saved.fields) {
+    Object.entries(saved.fields).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+  }
+
+  // Restore range sliders + refresh their labels
+  if (saved.ranges) {
+    Object.entries(saved.ranges).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.value = val;
+      // Find matching spectrum config to refresh label
+      const spec = SPECTRUMS.find(s => s.id === id);
+      if (spec) updateSpectrum(spec.id, spec.left, spec.right);
+    });
+  }
+
+  // Restore generated results
+  if (saved.generatedData) {
+    generatedData = saved.generatedData;
+    if (generatedData.brandInsights) {
+      displayResults(generatedData.brandInsights, generatedData.workshopData?.company?.name || '');
+    }
+  }
+
+  // Recompose onlyness in case fields were restored
+  composeOnlyness();
+
+  // Refresh progress bar
+  updateProgress();
+
+  // Show restored indicator, then transition to saved after 4s
+  const t = saved.savedAt ? fmtTime(new Date(saved.savedAt)) : '';
+  setSaveIndicator('restored', t);
+  setTimeout(() => setSaveIndicator('saved', t), 4000);
+}
+
+// Call restoreSession after all dynamic elements exist
+restoreSession();
+
+// ─── CLEAR SESSION ────────────────────────────────────────────────────────────
+
+function clearSession() {
+  const confirmed = confirm(
+    'This will permanently clear all workshop data and generated results.\nAre you sure you want to start over?'
+  );
+  if (!confirmed) return;
+  try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+  window.location.reload();
+}
+</script>
+</body>
+</html>
