@@ -6,6 +6,7 @@
 <title>Brand Discovery Workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg: #0f0e0c;
@@ -828,10 +829,633 @@
     border-color: var(--red);
     background: rgba(196,80,58,0.06);
   }
+
+/* ── AUTH SCREEN ── */
+#auth-screen {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 40px 20px;
+}
+#auth-screen.visible { display: flex; }
+
+.auth-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+}
+
+.auth-logo {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 32px;
+}
+
+.auth-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--cream);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+  gap: 0;
+}
+
+.auth-tab {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 20px 10px 0;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+}
+
+.auth-tab.active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+}
+
+.auth-field {
+  margin-bottom: 16px;
+}
+
+.auth-field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.auth-field input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-field input:focus {
+  border-color: var(--amber);
+}
+
+.auth-btn-primary {
+  width: 100%;
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+  font-weight: 500;
+}
+
+.auth-btn-primary:hover { background: var(--amber-dim); }
+
+.auth-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  position: relative;
+}
+
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: var(--border);
+}
+.auth-divider::before { left: 0; }
+.auth-divider::after { right: 0; }
+
+.auth-guest-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-guest-btn:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+#auth-error {
+  background: rgba(196, 80, 58, 0.1);
+  border: 1px solid rgba(196, 80, 58, 0.3);
+  color: var(--red);
+  font-size: 13px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* ── DASHBOARD SCREEN ── */
+#dashboard-screen {
+  display: none;
+  min-height: 100vh;
+  background: var(--bg);
+  flex-direction: column;
+}
+#dashboard-screen.visible { display: flex; }
+
+.dashboard-header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-logo {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--amber-glow);
+  border: 1px solid var(--amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--amber);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.dashboard-user-email {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.btn-sign-out {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-sign-out:hover { border-color: var(--red); color: var(--red); }
+
+.dashboard-body {
+  flex: 1;
+  padding: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dashboard-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.dashboard-title {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.dashboard-title span {
+  display: block;
+  font-size: 14px;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  margin-top: 6px;
+}
+
+.btn-new-worksheet {
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.btn-new-worksheet:hover { background: var(--amber-dim); }
+
+.worksheet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) { .worksheet-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .worksheet-grid { grid-template-columns: 1fr; } }
+
+.worksheet-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.worksheet-card:hover { border-color: var(--amber); }
+
+.worksheet-card-name {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--cream);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.worksheet-card-industry {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.worksheet-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.card-badge {
+  background: rgba(74, 140, 106, 0.15);
+  border: 1px solid rgba(74, 140, 106, 0.3);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+
+.worksheet-card-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.worksheet-card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-card-open {
+  flex: 1;
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-weight: 500;
+}
+.btn-card-open:hover { background: var(--amber-dim); }
+
+.btn-card-delete {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-card-delete:hover { border-color: var(--red); color: var(--red); }
+
+.dashboard-empty {
+  text-align: center;
+  padding: 80px 40px;
+  color: var(--text-dim);
+}
+
+.dashboard-empty-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.dashboard-empty h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--cream-dim);
+  margin-bottom: 8px;
+}
+
+.dashboard-empty p {
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* ── SIGNUP PROMPT MODAL ── */
+#signup-prompt-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 14, 12, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+#signup-prompt-modal.visible { display: flex; }
+
+.signup-prompt-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+}
+
+.signup-prompt-panel h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--cream);
+  margin-bottom: 12px;
+}
+
+.signup-prompt-panel p {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.signup-prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── SIDEBAR USER AREA ── */
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.sidebar-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-user-email {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.btn-sidebar-action {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn-sidebar-action:hover { border-color: var(--amber); color: var(--amber); }
+.btn-sidebar-action.danger:hover { border-color: var(--red); color: var(--red); }
+
+.sidebar-guest-banner {
+  padding: 12px 16px;
+  background: var(--amber-glow);
+  border: 1px solid rgba(232,168,70,0.15);
+  margin: 12px 16px;
+  text-align: center;
+}
+
+.sidebar-guest-banner p {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.btn-signup-sidebar {
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+}
+
+/* ── CLOUD SAVE INDICATOR ── */
+#cloud-save-indicator {
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.cloud-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.cloud-dot.saving { background: var(--amber); animation: pulse 1s infinite; }
+.cloud-dot.saved { background: var(--green); }
+.cloud-dot.error { background: var(--red); }
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 </style>
 </head>
 <body>
 
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-panel">
+    <div class="auth-logo">✦ Brand Discovery</div>
+    <h1 class="auth-title">Your brand strategy,<br>always within reach.</h1>
+    <p class="auth-subtitle">Save your workshops, work across multiple brands, access from anywhere.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="auth-error"></div>
+    <div id="auth-form-signin">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email-signin" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password-signin" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doSignIn()" />
+      </div>
+      <button class="auth-btn-primary" onclick="doSignIn()">Sign In →</button>
+    </div>
+    <div id="auth-form-signup" style="display:none">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email-signup" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password-signup" placeholder="Min 6 characters" autocomplete="new-password" />
+      </div>
+      <div class="auth-field">
+        <label>Confirm Password</label>
+        <input type="password" id="auth-password-confirm" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignUp()" />
+      </div>
+      <button class="auth-btn-primary" onclick="doSignUp()">Create Account →</button>
+    </div>
+    <div class="auth-divider">or</div>
+    <button class="auth-guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="dashboard-screen">
+  <div class="dashboard-header">
+    <div class="dashboard-logo">✦ Brand Discovery</div>
+    <div class="dashboard-user">
+      <div class="user-avatar" id="dash-avatar">?</div>
+      <span class="dashboard-user-email" id="dash-email"></span>
+      <button class="btn-sign-out" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+  <div class="dashboard-body">
+    <div class="dashboard-title-row">
+      <div class="dashboard-title">
+        Your Brands
+        <span id="dash-count"></span>
+      </div>
+      <button class="btn-new-worksheet" onclick="createNewWorksheet()">+ New Brand Worksheet</button>
+    </div>
+    <div id="worksheet-grid" class="worksheet-grid"></div>
+  </div>
+</div>
+
+<!-- SIGN-UP PROMPT MODAL -->
+<div id="signup-prompt-modal">
+  <div class="signup-prompt-panel">
+    <h3>Save your brand strategy</h3>
+    <p>Create a free account to generate insights and save your work. Your progress will be preserved across sessions and devices.</p>
+    <div class="signup-prompt-actions">
+      <button class="auth-btn-primary" onclick="promptGoSignUp()">Create Free Account →</button>
+      <button class="auth-guest-btn" onclick="promptContinueGuest()">Continue as Guest (won't save)</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell">
 <div id="progress-bar" style="width:0%"></div>
 
 <!-- LOADING OVERLAY -->
@@ -910,10 +1534,34 @@
     <label for="api-key-input">Anthropic API Key</label>
     <input id="api-key-input" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
   </div>
-  <div id="save-indicator">
-    <span id="save-dot"></span>
-    <span id="save-text">No saved session</span>
-  </div>
+      <!-- Logged-in user area -->
+      <div id="sidebar-user-logged-in" class="sidebar-user" style="display:none">
+        <div class="sidebar-user-row">
+          <div class="user-avatar" id="sidebar-avatar">?</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-email" id="sidebar-email"></div>
+          </div>
+        </div>
+        <div class="sidebar-user-actions">
+          <button class="btn-sidebar-action" onclick="goToDashboard()">My Brands</button>
+          <button class="btn-sidebar-action danger" onclick="doSignOut()">Sign Out</button>
+        </div>
+      </div>
+      <!-- Guest user area -->
+      <div id="sidebar-user-guest" class="sidebar-guest-banner" style="display:none">
+        <p>Guest Mode</p>
+        <button class="btn-signup-sidebar" onclick="showAuthScreen()">Sign Up to Save</button>
+      </div>
+      <!-- Cloud save indicator -->
+      <div id="cloud-save-indicator">
+        <span class="cloud-dot" id="cloud-dot"></span>
+        <span id="cloud-save-text">—</span>
+      </div>
+      <!-- Legacy save indicator (hidden, kept for compat) -->
+      <div id="save-indicator" style="display:none">
+        <span id="save-dot"></span>
+        <span id="save-text">No saved session</span>
+      </div>
 </nav>
 
 <!-- MAIN -->
@@ -1472,7 +2120,19 @@
 
 </main>
 
+</div><!-- /.app-shell -->
+
 <script>
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL  = 'https://chfechzaillzdwlgbnvc.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoZmVjaHphaWxsemR3bGdibnZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MTgxOTcsImV4cCI6MjA4ODk5NDE5N30.y3rScL1nLCsLr8sOZ0kRi_fJltBPF9JOpBP8V0XNisc';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── AUTH STATE ──
+let currentUser = null;
+let currentWorksheetId = null;
+let isGuest = false;
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
 const SPECTRUMS = [
@@ -1727,6 +2387,12 @@ function collectData() {
 let generatedData = null;
 
 async function generateInsights() {
+  // Show sign-up prompt for guests
+  if (isGuest) {
+    const proceed = await showSignupPrompt();
+    if (!proceed) return;
+  }
+
   const data = collectData();
   const errEl = document.getElementById('error-msg');
   errEl.style.display = 'none';
@@ -1970,6 +2636,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
     generatedData = { workshopData: data, brandInsights: parsed, generatedAt: new Date().toISOString() };
     displayResults(parsed, data.company.name);
     saveSession();
+    debouncedCloudSave();
 
   } catch (err) {
     console.error(err);
@@ -2368,6 +3035,7 @@ function saveSession() {
 // Debounced wrapper — fires 800ms after last input
 let _saveTimer = null;
 function debouncedSave() {
+  if (currentUser && currentWorksheetId) { debouncedCloudSave(); return; }
   setSaveIndicator('saving');
   clearTimeout(_saveTimer);
   _saveTimer = setTimeout(saveSession, 800);
@@ -2424,8 +3092,10 @@ function restoreSession() {
   setTimeout(() => setSaveIndicator('saved', t), 4000);
 }
 
-// Call restoreSession after all dynamic elements exist
-restoreSession();
+// Initialise auth (replaces bare restoreSession call)
+document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
+});
 
 // ─── CLEAR SESSION ────────────────────────────────────────────────────────────
 
@@ -2436,6 +3106,431 @@ function clearSession() {
   if (!confirmed) return;
   try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
   window.location.reload();
+}
+
+// ── SCREEN SWITCHING ──
+function showAuthScreen() {
+  document.getElementById('auth-screen').classList.add('visible');
+  document.getElementById('dashboard-screen').classList.remove('visible');
+  document.querySelector('.app-shell').style.display = 'none';
+}
+
+function showDashboard() {
+  document.getElementById('auth-screen').classList.remove('visible');
+  document.getElementById('dashboard-screen').classList.add('visible');
+  document.querySelector('.app-shell').style.display = 'none';
+  loadDashboard();
+}
+
+function showWorkshop() {
+  document.getElementById('auth-screen').classList.remove('visible');
+  document.getElementById('dashboard-screen').classList.remove('visible');
+  document.querySelector('.app-shell').style.display = '';
+}
+
+function goToDashboard() {
+  showDashboard();
+}
+
+// ── AUTH INIT ──
+async function initAuth() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      updateSidebarUser();
+      showDashboard();
+    } else {
+      showAuthScreen();
+    }
+  } catch(e) {
+    console.error('Auth init error:', e);
+    showAuthScreen();
+  }
+
+  sb.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user ?? null;
+    if (!currentUser && !isGuest) {
+      showAuthScreen();
+      updateSidebarUser();
+    }
+  });
+}
+
+// ── AUTH TAB SWITCH ──
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('auth-form-signin').style.display = tab === 'signin' ? '' : 'none';
+  document.getElementById('auth-form-signup').style.display = tab === 'signup' ? '' : 'none';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+// ── SIGN IN ──
+async function doSignIn() {
+  const email = document.getElementById('auth-email-signin').value.trim();
+  const password = document.getElementById('auth-password-signin').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.querySelector('#auth-form-signin .auth-btn-primary');
+  btn.textContent = 'Signing in\u2026';
+  btn.disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  btn.textContent = 'Sign In \u2192';
+  btn.disabled = false;
+
+  if (error) {
+    errEl.textContent = error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  currentUser = data.user;
+  isGuest = false;
+  updateSidebarUser();
+  showDashboard();
+}
+
+// ── SIGN UP ──
+async function doSignUp() {
+  const email = document.getElementById('auth-email-signup').value.trim();
+  const password = document.getElementById('auth-password-signup').value;
+  const confirm = document.getElementById('auth-password-confirm').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Please fill in all fields.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 6) {
+    errEl.textContent = 'Password must be at least 6 characters.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (password !== confirm) {
+    errEl.textContent = 'Passwords do not match.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.querySelector('#auth-form-signup .auth-btn-primary');
+  btn.textContent = 'Creating account\u2026';
+  btn.disabled = true;
+
+  const { data, error } = await sb.auth.signUp({ email, password });
+
+  btn.textContent = 'Create Account \u2192';
+  btn.disabled = false;
+
+  if (error) {
+    errEl.textContent = error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Supabase may require email confirmation — handle both cases
+  if (data.user && data.session) {
+    currentUser = data.user;
+    isGuest = false;
+    updateSidebarUser();
+    showDashboard();
+  } else {
+    // Email confirmation required
+    errEl.style.background = 'rgba(74,140,106,0.1)';
+    errEl.style.borderColor = 'rgba(74,140,106,0.3)';
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = 'Check your email to confirm your account, then sign in.';
+    errEl.style.display = 'block';
+  }
+}
+
+// ── SIGN OUT ──
+async function doSignOut() {
+  await sb.auth.signOut();
+  currentUser = null;
+  currentWorksheetId = null;
+  isGuest = false;
+  generatedData = null;
+  clearForm();
+  showAuthScreen();
+  updateSidebarUser();
+}
+
+// ── GUEST MODE ──
+function continueAsGuest() {
+  isGuest = true;
+  currentUser = null;
+  currentWorksheetId = null;
+  updateSidebarUser();
+  showWorkshop();
+  restoreSession(); // restore any existing localStorage session
+}
+
+// ── UPDATE SIDEBAR USER ──
+function updateSidebarUser() {
+  const loggedInEl = document.getElementById('sidebar-user-logged-in');
+  const guestEl = document.getElementById('sidebar-user-guest');
+  const cloudEl = document.getElementById('cloud-save-indicator');
+
+  if (currentUser) {
+    loggedInEl.style.display = '';
+    guestEl.style.display = 'none';
+    const email = currentUser.email || '';
+    const initial = email.charAt(0).toUpperCase();
+    document.getElementById('sidebar-avatar').textContent = initial;
+    document.getElementById('sidebar-email').textContent = email;
+    document.getElementById('dash-avatar').textContent = initial;
+    document.getElementById('dash-email').textContent = email;
+    cloudEl.style.display = '';
+  } else if (isGuest) {
+    loggedInEl.style.display = 'none';
+    guestEl.style.display = '';
+    cloudEl.style.display = 'none';
+  } else {
+    loggedInEl.style.display = 'none';
+    guestEl.style.display = 'none';
+    cloudEl.style.display = 'none';
+  }
+}
+
+// ── CLOUD SAVE STATUS ──
+function setCloudSaveStatus(state, msg) {
+  const dot = document.getElementById('cloud-dot');
+  const text = document.getElementById('cloud-save-text');
+  if (!dot || !text) return;
+  dot.className = 'cloud-dot ' + state;
+  text.textContent = msg || '';
+}
+
+// ── DASHBOARD: LOAD ──
+async function loadDashboard() {
+  const grid = document.getElementById('worksheet-grid');
+  const countEl = document.getElementById('dash-count');
+  if (!grid || !currentUser) return;
+
+  grid.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px 0;">Loading\u2026</div>';
+
+  const { data, error } = await sb
+    .from('worksheets')
+    .select('id, name, fields, updated_at, generated_data')
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    grid.innerHTML = '<div style="color:var(--red);font-size:13px;padding:20px 0;">Failed to load worksheets.</div>';
+    return;
+  }
+
+  if (countEl) countEl.textContent = data.length === 0 ? 'No brands yet' : `${data.length} brand${data.length !== 1 ? 's' : ''}`;
+
+  if (!data.length) {
+    grid.innerHTML = `
+      <div class="dashboard-empty" style="grid-column:1/-1">
+        <div class="dashboard-empty-icon">\u2726</div>
+        <h3>Start your first brand workshop</h3>
+        <p>Each worksheet is a complete brand strategy session for one brand or project.</p>
+        <button class="btn-new-worksheet" onclick="createNewWorksheet()">+ New Brand Worksheet</button>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(ws => {
+    const industry = ws.fields?.industry || '';
+    const hasResults = !!ws.generated_data;
+    const dateStr = new Date(ws.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `
+      <div class="worksheet-card" onclick="openWorksheet('${ws.id}')">
+        <div class="worksheet-card-name">${esc(ws.name)}</div>
+        ${industry ? `<div class="worksheet-card-industry">${esc(industry)}</div>` : ''}
+        <div class="worksheet-card-meta">
+          ${hasResults ? '<span class="card-badge">Generated \u2713</span>' : ''}
+          <span class="worksheet-card-date">${dateStr}</span>
+        </div>
+        <div class="worksheet-card-actions" onclick="event.stopPropagation()">
+          <button class="btn-card-open" onclick="openWorksheet('${ws.id}')">Open \u2192</button>
+          <button class="btn-card-delete" onclick="deleteWorksheet('${ws.id}')">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── DASHBOARD: OPEN WORKSHEET ──
+async function openWorksheet(id) {
+  const { data, error } = await sb.from('worksheets').select('*').eq('id', id).single();
+  if (error || !data) { alert('Failed to open worksheet.'); return; }
+
+  currentWorksheetId = id;
+  clearForm();
+
+  // Restore fields
+  if (data.fields) {
+    Object.entries(data.fields).forEach(([key, val]) => {
+      const el = document.getElementById(key);
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) el.value = val;
+    });
+  }
+
+  // Restore ranges
+  if (data.ranges) {
+    Object.entries(data.ranges).forEach(([key, val]) => {
+      const el = document.getElementById(key);
+      if (el && el.type === 'range') {
+        el.value = val;
+        const lbl = document.getElementById(key + '_val');
+        if (lbl) lbl.textContent = val;
+      }
+    });
+  }
+
+  // Restore generated data
+  if (data.generated_data) {
+    generatedData = data.generated_data;
+    displayResults(generatedData.brandInsights, generatedData.workshopData?.company?.name || '');
+  }
+
+  updateProgress();
+  composeOnlyness();
+  setCloudSaveStatus('saved', 'Saved to cloud');
+  showWorkshop();
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── DASHBOARD: CREATE NEW ──
+async function createNewWorksheet() {
+  if (!currentUser) return;
+
+  const { data, error } = await sb
+    .from('worksheets')
+    .insert({ user_id: currentUser.id, name: 'Untitled Brand' })
+    .select()
+    .single();
+
+  if (error || !data) { alert('Failed to create worksheet.'); return; }
+
+  currentWorksheetId = data.id;
+  clearForm();
+  generatedData = null;
+  setCloudSaveStatus('saved', 'New worksheet');
+  showWorkshop();
+}
+
+// ── DASHBOARD: DELETE ──
+async function deleteWorksheet(id) {
+  if (!confirm('Delete this worksheet? This cannot be undone.')) return;
+  const { error } = await sb.from('worksheets').delete().eq('id', id);
+  if (error) { alert('Failed to delete.'); return; }
+  loadDashboard();
+}
+
+// ── CLEAR FORM ──
+function clearForm() {
+  // Clear all text/textarea inputs
+  document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+    if (el.id && !el.id.startsWith('auth-') && el.id !== 'api-key-input') el.value = '';
+  });
+  // Reset ranges to 5
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    el.value = 5;
+    const lbl = document.getElementById(el.id + '_val');
+    if (lbl) lbl.textContent = 5;
+  });
+  // Hide results panel
+  const rp = document.getElementById('results-panel');
+  if (rp) rp.classList.remove('visible');
+  generatedData = null;
+  updateProgress();
+}
+
+// ── CLOUD SAVE ──
+function collectFields() {
+  const fields = {};
+  document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+    if (el.id && !el.id.startsWith('auth-') && el.id !== 'api-key-input') {
+      fields[el.id] = el.value;
+    }
+  });
+  return fields;
+}
+
+function collectRanges() {
+  const ranges = {};
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    if (el.id) ranges[el.id] = el.value;
+  });
+  return ranges;
+}
+
+const _cloudSaveDebounce = { t: null };
+
+function debouncedCloudSave() {
+  if (!currentUser || !currentWorksheetId) {
+    // Guest: use localStorage
+    debouncedSave();
+    return;
+  }
+  clearTimeout(_cloudSaveDebounce.t);
+  setCloudSaveStatus('saving', 'Saving\u2026');
+  _cloudSaveDebounce.t = setTimeout(saveToCloud, 800);
+}
+
+async function saveToCloud() {
+  if (!currentUser || !currentWorksheetId) return;
+  const name = document.getElementById('companyName')?.value.trim() || 'Untitled Brand';
+  const payload = {
+    name,
+    fields: collectFields(),
+    ranges: collectRanges(),
+    generated_data: generatedData || null,
+  };
+  const { error } = await sb.from('worksheets').update(payload).eq('id', currentWorksheetId);
+  if (error) {
+    setCloudSaveStatus('error', 'Save failed');
+    console.error('Cloud save error:', error);
+  } else {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    setCloudSaveStatus('saved', `Saved \u00b7 ${timeStr}`);
+  }
+}
+
+// ── SIGN-UP PROMPT (for guests trying to generate) ──
+let _promptResolve = null;
+
+function showSignupPrompt() {
+  return new Promise(resolve => {
+    _promptResolve = resolve;
+    document.getElementById('signup-prompt-modal').classList.add('visible');
+  });
+}
+
+function promptGoSignUp() {
+  document.getElementById('signup-prompt-modal').classList.remove('visible');
+  if (_promptResolve) _promptResolve(false);
+  _promptResolve = null;
+  showAuthScreen();
+  // Switch to sign-up tab
+  setTimeout(() => {
+    const tabs = document.querySelectorAll('.auth-tab');
+    if (tabs[1]) { tabs[1].click(); }
+  }, 100);
+}
+
+function promptContinueGuest() {
+  document.getElementById('signup-prompt-modal').classList.remove('visible');
+  if (_promptResolve) _promptResolve(true);
+  _promptResolve = null;
 }
 </script>
 </body>
